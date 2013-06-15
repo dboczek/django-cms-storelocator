@@ -1,11 +1,8 @@
-import tarfile
-import StringIO
-import shutil
-import os
 import math
-from django.conf import settings
 from django.db import models
 from cms.models import CMSPlugin
+from filer.fields.image import FilerImageField
+
 
 class LocationManager(models.Manager):
     def __init__(self):
@@ -64,6 +61,7 @@ class Location(models.Model):
     description = models.TextField(blank=True, null=True)
     phone = models.CharField(max_length=255, blank=True, null=True)
     url = models.URLField(max_length=255, blank=True, null=True)
+    image = FilerImageField(blank=True, null=True)
 
     objects = LocationManager()
 
