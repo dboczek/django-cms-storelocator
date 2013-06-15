@@ -82,6 +82,12 @@ function render_location(location_info) {
         'class': 'location_name',
         html: location_info.name
     });
+    var location_image = '';
+    if (location_info.image) {
+        location_image = $('<img>', {
+            'src': location_info.image
+        });
+    }
     $(location_name).click(function() {
         var marker = markers.filter(function(marker) {
             if (marker.location_id == location_info.id) {
@@ -91,6 +97,7 @@ function render_location(location_info) {
         google.maps.event.trigger(marker, "click");
         return false;
     });
+    $(location_item).append(location_image);
     $(location_item).append(location_name);
     $(location_item).append(add_location_info_item(location_info, 'address'));
     $(location_item).append(add_location_info_item(location_info, 'phone', 'Phone'));
