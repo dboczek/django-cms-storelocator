@@ -53,7 +53,7 @@ class LocationType(models.Model):
         return self.name
 
 class Location(models.Model):
-    location_types = models.ManyToManyField(LocationType, blank=True, null=True)
+    location_types = models.ManyToManyField(LocationType, blank=True, null=True, editable=False)
     name = models.CharField(max_length=255)
     address = models.TextField(max_length=255, blank=False)
     latitude = models.FloatField(blank=False, null=True)
@@ -85,10 +85,11 @@ DISTANCE_CHOICES = (
     ('100', '100 Miles'),
     ('500', '500 Miles'),
     ('2000', '2000 Miles'),
+    ('9999', 'Whole World'),
 )
 
 class StoreLocator(CMSPlugin):
     default_distance = models.CharField(max_length=50, default='10', choices=DISTANCE_CHOICES)
     starting_location = models.CharField(max_length=255, help_text="A city or address to center the map on.", blank=True)
-    show_distance = models.BooleanField(default=True, help_text='Disabling this will render all locations on the map regardless of zoom level')
-    show_location_types = models.ManyToManyField(LocationType, blank=True, null=True)
+    show_distance = models.BooleanField(default=False, help_text='Disabling this will render all locations on the map regardless of zoom level', editable=False)
+    show_location_types = models.ManyToManyField(LocationType, blank=True, null=True, editable=False)

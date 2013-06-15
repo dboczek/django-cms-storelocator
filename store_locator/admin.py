@@ -26,7 +26,9 @@ class LocationAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'location_types',)
+            'fields': ('name',
+                       # 'location_types',
+            )
         }),
         address_fieldset,
         ('Other Information', {
@@ -47,5 +49,5 @@ class LocationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Location, LocationAdmin)
-admin.site.register(LocationType)
+# admin.site.register(LocationType)
 

@@ -8,7 +8,8 @@ var zoom_list = {
     "100" : 8,
     "500" : 7,
     "2000" : 4,
-}
+    "9999" : 1
+};
 
 var markers = new Array;
 var latlng = new google.maps.LatLng(39.0997265,-94.5785667);
