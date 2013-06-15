@@ -54,8 +54,8 @@ function location_search() {
             "lat" : latitude,
             "long" : longitude,
             "distance" : distance,
-            "location_type" : $(".location_type:checked").val()
-        }
+            "location_type" : ""
+        };
         var search_url = get_locations_url;
         $.getJSON(search_url, search_params, function(data) {
             $(".location_list").children().remove();
@@ -63,7 +63,7 @@ function location_search() {
                 location_info = this;
                 var location_marker = new google.maps.Marker({
                     position: new google.maps.LatLng(location_info.latitude, location_info.longitude),
-                    title: location_info.name,
+                    title: location_info.name
                 });
                 location_marker.setMap(map);
                 location_marker.location_id = location_info.id;
