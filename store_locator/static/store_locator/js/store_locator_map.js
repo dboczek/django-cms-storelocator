@@ -53,7 +53,7 @@ function location_search() {
         var search_params = {
             "lat" : latitude,
             "long" : longitude,
-            "distance" : distance,
+            "distance" : 9999,
             "location_type" : ""
         };
         var search_url = get_locations_url;
@@ -76,7 +76,8 @@ function location_search() {
 }
 
 function render_location(location_info) {
-    var location_item = $("<li>");
+    var location_li_item = $("<li>", {'class': 'row-fluid'});
+    var location_item = $("<div>", {'class': 'span10 offset1'});
     var location_name = $("<a>", {
         'href': '#',
         'class': 'location_name',
@@ -100,19 +101,19 @@ function render_location(location_info) {
     $(location_item).append(location_image);
     $(location_item).append(location_name);
     $(location_item).append(add_location_info_item(location_info, 'address'));
-    $(location_item).append(add_location_info_item(location_info, 'phone', 'Phone'));
+    $(location_item).append(add_location_info_item(location_info, 'phone'));
     if (location_info.url) {
         var website = $("<a>", {html: location_info.url, "href": location_info.url});
         $(location_item).append("<br />");
         var location_website_item = $("<span>",{
-            'class': 'location_url',
-            html: "Website: "
+            'class': 'location_url'
         });
         $(location_website_item).append(website);
         $(location_item).append(location_website_item);
     }
-    $(location_item).append(add_location_info_item(location_info, 'description', 'Description'));
-    $(".location_list").append(location_item);
+    $(location_item).append(add_location_info_item(location_info, 'description'));
+    $(location_li_item).append(location_item)
+    $(".location_list").append(location_li_item);
 }
 
 function add_location_info_item(location_info, item_name, item_label) {
