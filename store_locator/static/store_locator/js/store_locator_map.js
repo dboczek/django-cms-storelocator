@@ -76,44 +76,63 @@ function location_search() {
 }
 
 function render_location(location_info) {
-    var location_li_item = $("<li>", {'class': 'row-fluid'});
-    var location_item = $("<div>", {'class': 'span10 offset1'});
-    var location_name = $("<a>", {
-        'href': '#',
-        'class': 'location_name',
-        html: location_info.name
-    });
-    var location_image = '';
+    var template = '<div class="span2 offset1 img-container"></div><div class="span8 address-container"></div>';
+    var address_template = '<span class="name"></span><span class="btn btn-info btn-small"><a href="#map_canvas"><i class="location_name icon-map-marker"></i></a></span>' +
+        '<div class="address"></div>';
+    var $li = $("<li>", {'class': 'row-fluid'}).html(template);
+    var $address = $('<div>').html(address_template);
+    var $img = '';
     if (location_info.image) {
-        location_image = $('<img>', {
+        $img = $('<img>', {
             'src': location_info.image
         });
     }
-    $(location_name).click(function() {
-        var marker = markers.filter(function(marker) {
-            if (marker.location_id == location_info.id) {
-                return marker;
-            }
-        })[0];
-        google.maps.event.trigger(marker, "click");
-        return false;
-    });
-    $(location_item).append(location_image);
-    $(location_item).append(location_name);
-    $(location_item).append(add_location_info_item(location_info, 'address'));
-    $(location_item).append(add_location_info_item(location_info, 'phone'));
-    if (location_info.url) {
-        var website = $("<a>", {html: location_info.url, "href": location_info.url});
-        $(location_item).append("<br />");
-        var location_website_item = $("<span>",{
-            'class': 'location_url'
-        });
-        $(location_website_item).append(website);
-        $(location_item).append(location_website_item);
-    }
-    $(location_item).append(add_location_info_item(location_info, 'description'));
-    $(location_li_item).append(location_item)
-    $(".location_list").append(location_li_item);
+
+//    var location_li_item = $("<li>", {'class': 'row-fluid'});
+//    var location_item = $("<div>", {'class': 'span10 offset1'});
+//    var location_name = $("<a>", {
+//        'href': '#map_canvas',
+//        'class': 'location_name',
+//        html: location_info.name
+//    });
+    $(".name", $address).text(location_info.name);
+    $(".img-container", $li).append($img);
+    $(".address-container", $li).append($address);
+//    var location_image = '';
+//    if (location_info.image) {
+//        location_image = $('<img>', {
+//            'src': location_info.image
+//        });
+//    }
+//    $(location_name).click(function() {
+//        var marker = markers.filter(function(marker) {
+//            if (marker.location_id == location_info.id) {
+//                return marker;
+//            }
+//        })[0];
+//        google.maps.event.trigger(marker, "click");
+//        $('html, body').animate({
+//            scrollTop: $( $(this).attr('href') ).offset().top
+//        }, 500);
+//        return false;
+//    });
+//    $(location_item).append(location_image);
+//    $(location_item).append(location_name);
+//    $(location_item).append(add_location_info_item(location_info, 'address'));
+//    $(location_item).append(add_location_info_item(location_info, 'phone'));
+//    if (location_info.url) {
+//        var website = $("<a>", {html: location_info.url, "href": location_info.url});
+//        $(location_item).append("<br />");
+//        var location_website_item = $("<span>",{
+//            'class': 'location_url'
+//        });
+//        $(location_website_item).append(website);
+//        $(location_item).append(location_website_item);
+//    }
+//    $(location_item).append(add_location_info_item(location_info, 'description'));
+//    $(location_li_item).append(location_item);
+//    $(".location_list").append(location_li_item);
+    $(".location_list").append($li);
 }
 
 function add_location_info_item(location_info, item_name, item_label) {
