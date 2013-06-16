@@ -44,7 +44,10 @@ def get_locations(request):
     for location in locations:
         location_dict = {}
         location_dict['id'] = location.id
-        location_dict['image'] = location.image.url
+        try:
+            location_dict['image'] = location.image.url
+        except AttributeError:
+            location_dict['image'] = None
         location_dict['name'] = location.name
         location_dict['address'] = location.address
         location_dict['latitude'] = location.latitude
