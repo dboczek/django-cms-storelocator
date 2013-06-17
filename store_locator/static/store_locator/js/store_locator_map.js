@@ -76,32 +76,36 @@ function location_search() {
 }
 
 function render_location(location_info) {
-    var template = '<div class="span2 offset1 img-container"></div><div class="span8 address-container"></div>';
-    var address_template = '<span class="name"></span><span class="btn btn-info btn-small locate"><a href="#map_canvas"><i class="icon-map-marker"></i></a></span>' +
+    var template = '<span class="locate pull-left"><a class="_thumbnail" href="#map_canvas"></a></span><address class="media-body"></address>';
+    var address_template = '<div><h4 class="name media-heading"></h4><span class="btn btn-info btn-small locate"><a href="#map_canvas"><i class="icon-map-marker"></i></a></span></div>' +
         '<div class="address"></div><div class="phone"></div><div class="url"></div><div class="description"></div>';
-    var $li = $("<li>", {'class': 'row-fluid'}).html(template);
-    var $store = $('<div>').html(address_template);
+    var $li = $("<li>", {'class': 'media'}).html(template);
     var $img = '';
 
     if (location_info.image) {
         $img = $('<img>', {
-            'src': location_info.image
+            'src': location_info.image,
+            'class': 'media-object'
+        });
+    } else {
+        $img = $('<span>', {
+            'class': 'no-image text-center'
         });
     }
-    $(".name", $store).text(location_info.name);
-    $(".address", $store).html(location_info.address.replace(/\r/g, "<br />"));
-    $(".phone", $store).text(location_info.phone);
+    $("address", $li).html(address_template);
+    $(".name", $li).text(location_info.name);
+    $(".address", $li).html(location_info.address.replace(/\r/g, "<br />"));
+    $(".phone", $li).text(location_info.phone);
     if (location_info.url) {
-        $(".url", $store).append(
+        $(".url", $li).append(
             $("<a>", {
                 "href": location_info.url,
                 "html": location_info.url
             })
         );
     }
-    $(".description", $store).text(location_info.description);
-    $(".img-container", $li).append($img);
-    $(".address-container", $li).append($store);
+    $(".description", $li).text(location_info.description);
+    $("._thumbnail", $li).append($img);
     $('.locate', $li).click(function() {
         var marker = markers.filter(function(marker) {
             if (marker.location_id == location_info.id) {

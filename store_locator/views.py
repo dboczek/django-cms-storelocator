@@ -1,6 +1,7 @@
 import urllib2
 import urllib
 import json
+from django.conf import settings
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -63,5 +64,7 @@ def get_locations(request):
             }
             thumbnailer = get_thumbnailer(location.image)
             location_dict['image'] = thumbnailer.get_thumbnail(thumbnail_options).url
+        elif settings.STORE_LOCATION_PLACEHOLDER_IMAGE:
+            location_dict['image'] = settings.STORE_LOCATION_PLACEHOLDER_IMAGE
         json_locations.append(location_dict)
     return HttpResponse(json.dumps(json_locations), mimetype="application/json")
