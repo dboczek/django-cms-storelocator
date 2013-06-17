@@ -3,10 +3,11 @@ import urllib
 import json
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render_to_response
 from django.template import RequestContext
-from store_locator.models import StoreLocator, DISTANCE_CHOICES, LocationType, Location
+from easy_thumbnails.files import get_thumbnailer
+from store_locator.models import DISTANCE_CHOICES, LocationType, Location
 
 def show_locations(request):
     get_lat_long_url = reverse('get_lat_long_url')
@@ -44,10 +45,6 @@ def get_locations(request):
     for location in locations:
         location_dict = {}
         location_dict['id'] = location.id
-        try:
-            location_dict['image'] = location.image.url
-        except AttributeError:
-            location_dict['image'] = None
         location_dict['name'] = location.name
         location_dict['address'] = location.address
         location_dict['latitude'] = location.latitude
@@ -56,5 +53,15 @@ def get_locations(request):
         location_dict['description'] = location.description
         location_dict['url'] = location.url
         location_dict['phone'] = location.phone
+        location_dict['image'] = None
+        if location.image:
+            thumbnail_options = {
+                'size': (210, 190,),
+                'crop': True,
+                'subject_location': location.image.subject_location,
+                'upscale': True,
+            }
+            thumbnailer = get_thumbnailer(location.image)
+            location_dict['image'] = thumbnailer.get_thumbnail(thumbnail_options).url
         json_locations.append(location_dict)
     return HttpResponse(json.dumps(json_locations), mimetype="application/json")
