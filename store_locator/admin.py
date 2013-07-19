@@ -32,7 +32,7 @@ class LocationAdmin(admin.ModelAdmin):
         }),
         address_fieldset,
         ('Other Information', {
-            'fields': ('phone', 'url', 'description')
+            'fields': ('phone', 'url', 'email', 'description')
         }),
     )
 

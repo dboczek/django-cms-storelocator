@@ -78,47 +78,111 @@ function location_search() {
 function render_location(location_info) {
     var template = '<span class="locate pull-left"><a class="_thumbnail" href="#map_canvas"></a></span><address class="media-body"></address>';
     var address_template = '<div><h4 class="name media-heading"></h4><span class="btn btn-info btn-small locate"><a href="#map_canvas"><i class="icon-map-marker"></i></a></span></div>' +
-        '<div class="address"></div><div class="phone"></div><div class="url"></div><div class="description"></div>';
+        '<div class="address"></div><div class="phone"></div><div class="url"></div><div class="email"></div><div class="description"></div>';
     var $li = $("<li>", {'class': 'media'}).html(template);
     var $img = '';
 
-    if (location_info.image) {
-        $img = $('<img>', {
-            'src': location_info.image,
-            'class': 'media-object'
-        });
+    if ($('html').loadTemplate !== undefined && $('#store_template')) {
+      render_template(location_info);
     } else {
-        $img = $('<span>', {
-            'class': 'no-image text-center'
-        });
-    }
-    $("address", $li).html(address_template);
-    $(".name", $li).text(location_info.name);
-    $(".address", $li).html(location_info.address.replace(/\r/g, "<br />"));
-    $(".phone", $li).text(location_info.phone);
-    if (location_info.url) {
-        $(".url", $li).append(
-            $("<a>", {
-                "href": location_info.url,
-                "html": location_info.url
-            })
-        );
-    }
-    $(".description", $li).text(location_info.description);
-    $("._thumbnail", $li).append($img);
-    $('.locate', $li).click(function() {
-        var marker = markers.filter(function(marker) {
-            if (marker.location_id == location_info.id) {
-                return marker;
-            }
-        })[0];
-        google.maps.event.trigger(marker, "click");
-        $('html, body').animate({
-            scrollTop: $( $("a", this).attr('href') ).offset().top
-        }, 500);
+      if (location_info.image) {
+          $img = $('<img>', {
+              'src': location_info.image,
+              'class': 'media-object'
+          });
+      } else {
+          $img = $('<span>', {
+              'class': 'no-image text-center'
+          });
+      }
+      $("address", $li).html(address_template);
+      $(".name", $li).text(location_info.name);
+      $(".address", $li).html(location_info.address.replace(/\r/g, "<br />"));
+      $(".phone", $li).text(location_info.phone);
+      if (location_info.url) {
+          $(".url", $li).append(
+              $("<a>", {
+                  "href": location_info.url,
+                  "html": location_info.url
+              })
+          );
+      }
+      if (location_info.email) {
+        $(".email", $li).append(
+          $("<a>", {
+            "href": "mailto:" + location_info.email,
+            "html": location_info.email
+          })
+        )
+      }
+      $(".description", $li).text(location_info.description);
+      $("._thumbnail", $li).append($img);
+      $('.locate', $li).click(function() {
+        set_marker(location_info, this);
         return false;
-    });
-    $(".location_list").append($li);
+      });
+      $(".location_list").append($li);
+    }
+}
+
+function set_marker(location_info, $clicked_element) {
+  var marker = markers.filter(function (marker) {
+    if (marker.location_id == location_info.id) {
+      return marker;
+    }
+  })[0];
+  google.maps.event.trigger(marker, "click");
+  $('html, body').animate(
+    {
+      scrollTop: $($("a", $clicked_element).attr('href')).offset().top
+    }, 500);
+}
+
+/**
+ * Render using template. See details at: http://codepb.github.io/jquery-template/index.html
+ *
+ * @param location_info
+ */
+function render_template(location_info) {
+  var $li = $('<li>', {'class': 'media'});
+
+  $li.loadTemplate(
+    '#store_template',
+    {
+      name: location_info.name,
+      address: location_info.address.replace(/\r/g, "<br />"),
+      phone: location_info.phone,
+      url: location_info.url,
+      email: location_info.email,
+      image: location_info.image,
+      description: location_info.description
+    },
+    {
+      success: function () {
+        if (location_info.phone) {
+          $('#phone', $li).attr('href', 'tel:' + location_info.phone);
+        } else {
+          $('#phone', $li).closest('.optional').remove();
+        }
+        if (location_info.email) {
+          $('#email', $li).attr('href', 'mailto:' + location_info.email);
+        } else {
+          $('#email', $li).closest('.optional').remove();
+        }
+        if (!location_info.description) {
+          $('#description', $li).closest('.optional').remove();
+        }
+        if (!location_info.url) {
+          $('#url', $li).closest('.optional').remove();
+        }
+        $('.locate', $li).click(function() {
+          set_marker(location_info, this);
+          return false;
+        });
+      }
+    }
+  );
+  $('.location_list').append($li);
 }
 
 function add_location_info_item(location_info, item_name, item_label) {
