@@ -29,7 +29,9 @@ $(document).ready(function() {
 document.map = map;
 function clear_markers() {
     for (i in markers) {
+      if (markers[i].setMap !== undefined) {
         markers[i].setMap(null);
+      }
     }
     markers.length = 0;
 }
@@ -206,20 +208,20 @@ function add_location_info_item(location_info, item_name, item_label) {
 
 function get_location_marker_click_listener(location_info, location_marker) {
     return function() {
-        content = "<strong>" + location_info.name + "</strong><br>" +
+        var info_content = "<strong>" + location_info.name + "</strong><br>" +
             location_info.address.replace(/\n/g, '<br />') + "<br>" +
             "<a href='http://maps.google.com/maps?saddr=" + search_value + "&daddr=" + location_info.address.replace(/\r/g, ", ") + "'>Directions</a>";
         if (location_info.url != '') {
-            content += "<br><strong>Website:</strong> <a href='" + location_info.url + "'>" + location_info.url + "</a>";
+            info_content += "<br><strong>Website:</strong> <a href='" + location_info.url + "'>" + location_info.url + "</a>";
         }
         if (location_info.phone != '') {
-            content += "<br><strong>Phone:</strong> " + location_info.phone;
+            info_content += "<br><strong>Phone:</strong> " + location_info.phone;
         }
         if (location_info.description != '') {
-            content += "<br><i> " + location_info.description + "</i>";
+            info_content += "<br><i> " + location_info.description + "</i>";
         }
 
-        infoWindow.setContent(content);
+        infoWindow.setContent(info_content);
         infoWindow.open(map, location_marker);
 
     }
